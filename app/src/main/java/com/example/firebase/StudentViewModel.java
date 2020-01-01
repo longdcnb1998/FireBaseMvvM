@@ -1,5 +1,7 @@
 package com.example.firebase;
 
+import android.util.Log;
+
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
@@ -28,6 +30,7 @@ public class StudentViewModel extends ViewModel {
         public List<Student> apply(DataSnapshot input) {
 
             List<Student> students = new ArrayList<>();
+            Log.d("AAA",input.toString());
             for (DataSnapshot snapshot : input.getChildren()){
                 Student s = snapshot.getValue(Student.class);
                 students.add(s);
@@ -41,5 +44,12 @@ public class StudentViewModel extends ViewModel {
 
     public LiveData<List<Student> >getData(){
         return data;
+    }
+
+    public void updateStudent(Student students){
+        ArrayList<Student> list = (ArrayList<Student>) data.getValue();
+        Log.d("LongDinh", String.valueOf(list.size()));
+        list.add(students);
+        reference.setValue(list);
     }
 }

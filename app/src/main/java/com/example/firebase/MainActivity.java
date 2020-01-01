@@ -9,6 +9,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -53,8 +55,9 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    private LiveData<Student> data;
+    private StudentAdapter adapter;
     private StudentViewModel viewModel;
+    private ArrayList<Student> students;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+        students = new ArrayList<>();
+        adapter = new StudentAdapter();
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL,false));
 
         viewModel = ViewModelProviders.of(this).get(StudentViewModel.class);
 
@@ -69,8 +75,31 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<Student> students) {
                 Log.d("SizeS", String.valueOf(students.size()));
+                adapter.setStudents(students);
+                binding.recyclerView.setAdapter(adapter);
             }
         });
 
+     binding.buttonAdd.setOnClickListener(new View.OnClickListener() {
+         @Override
+         public void onClick(View v) {
+             Student student = new Student();
+//             student.setId(3);
+             student.setName("Vu Lang");
+             viewModel.updateStudent(student);
+             Toast.makeText(MainActivity.this, "Đã Thêm", Toast.LENGTH_SHORT).show();
+         }
+     });
+//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+//
+//        Student student = new Student(1,"Long Dinh");
+//        Student student1 = new Student(2,"Tran Ha");
+//        Student student2 = new Student(3,"Ngoc Nguyen");
+//
+//        students.add(student);
+//        students.add(student1);
+//        students.add(student2);
+//
+//        reference.child("Students").setValue(students);
     }
 }
